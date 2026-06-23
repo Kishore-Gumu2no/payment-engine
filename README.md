@@ -1,5 +1,5 @@
 # Stateful AI-Driven Payment Engine
-This project is a concurrent, stateful payment gateway built on Node.js. It features a Redis-backed idempotency system to defend against race conditions and a feature-flagged AI simulated Engine that dynamically simulates network failures for end-to-end testing.
+This project is a concurrent, stateful payment gateway built on Node.js and TypeScript. It includes a Redis-backed idempotency system to defend against race conditions and a feature-flagged AI simulated Engine that simulates failures for end-to-end testing dynamically.
 
 ## Key Features
 - **Atomic Idempotency & Concurrency:** Implements strict `SET ... NX` Redis locks to instantly reject duplicate payloads, preventing database race conditions and double-charging during high-traffic spikes.
