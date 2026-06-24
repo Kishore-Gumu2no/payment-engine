@@ -75,10 +75,12 @@ app.post('/payment', async (req, res) => {
         if (error.code === 'P2002') {
             return res.status(409).send({error: "Payment with this idempotency key already exists."});  
         }
+        await redis.del(idempotencyKey); 
+        console.error(`[500] Database error, releasing the key ${idempotencyKey} for retry. `);
         return res.status(500).send({error: "Internal Server Error"});
     }
     if (process.env.AI_TESTING === "true") {
-        const currentStep = ruleBook[currentStepIndex - 1]; // Get the AI message we just passed
+        const currentStep = ruleBook[currentStepIndex - 1]; 
         return res.status(currentStep.mockResponse.httpStatus).send(currentStep.mockResponse.body);
     } else {
         return res.status(200).send({ message: "Raw payment saved to database successfully!" });
@@ -112,6 +114,8 @@ app.post('/refund', async (req, res) => {
             return res.status(currentStep.mockResponse.httpStatus).send(currentStep.mockResponse.body);
         }
         console.log(`Processing refund for transaction ${originalTransactionId}`);
+        await redis.del(idempotencyKey);
+        console.error(`[500] Database error, lock released for key: ${idempotencyKey}`);
     }
     if (process.env.AI_TESTING === "true") {
         const currentStep = ruleBook[currentStepIndex - 1]; 
