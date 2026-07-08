@@ -15,3 +15,8 @@ model Payment{
   idempotencyKey String @unique
   amount         Int
 }
+model Refund{
+  id                     String @id @default(uuid())
+  originalTransactionId  String
+  idempotencyKey         String @unique
+}

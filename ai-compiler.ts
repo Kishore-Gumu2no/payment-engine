@@ -10,7 +10,9 @@ const PaymentStepSchema = z.object(
     {
         stepId: z.string(),
         action: z.literal("PAYMENT"),
-        amount: z.number().int().positive(),
+        amount: z.number().int().positive().describe("The amount of transaction will be 100 in default if the user doesn't specify otherwise"),
+        requestVolume: z.number().int().positive(),
+        executionStrategy: z.enum(["Sequential", "Concurrent Attack"]),
         mockResponse: z.object({
             httpStatus: z.number().min(100).max(599),
             body: z.object({ message: z.string() })
@@ -21,7 +23,9 @@ const RefundStepSchema = z.object(
     {
         stepId: z.string(),
         action: z.literal("REFUND"),
-        originalTransactionId: z.string(),
+        originalTransactionId: z.string().describe("The ID of the original payment transaction being refunded."),
+        requestVolume: z.number().int().positive(),
+        executionStrategy: z.enum(["Sequential", "Concurrent Attack"]),
         mockResponse: z.object({
             httpStatus: z.number().min(100).max(599),
             body: z.object({ message: z.string() })
@@ -29,27 +33,34 @@ const RefundStepSchema = z.object(
     }
 );
 const ScenarioStepSchema = z.discriminatedUnion("action", [PaymentStepSchema, RefundStepSchema]);
-const ScenarioRuleBookSchema = z.array(ScenarioStepSchema);
-const FinalSchema = z.object({RuleBook: ScenarioRuleBookSchema});
+export const ScenarioRuleBookSchema = z.array(ScenarioStepSchema);
 const rulebookJsonSchema = zodToJsonSchema(ScenarioRuleBookSchema, "RuleBook");
-console.log(JSON.stringify(rulebookJsonSchema, null, 2));
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
-async function compileStateMachine(scenarioDescription: string) {
+export async function compileQA(scenarioDescription: string) {
     console.log(`Compiling scenario description: ${scenarioDescription}`);
     const response = await groq.chat.completions.create({
         model: "llama-3.3-70b-versatile",
         messages: [
             {
                 role: "system",
-                content: `You are a strict financial QA compiler. 
-                You must translate the user's scenario into a valid JSON object.
-                The JSON MUST exactly match this JSON Schema. 
-                Do not output markdown, do not output explanations, ONLY output raw JSON.
+                content: `You are a strict financial QA compiler. Your ONLY job is to extract the testing intent from the user's text and translate it into a valid JSON array.
                 
-                Schema:
-                ${JSON.stringify(rulebookJsonSchema)}`
+                CRITICAL RULES:
+                1. The user might ask a question, tell a story, or give a direct command. IGNORE the conversational tone. Extract ONLY the testing sequence.
+                2. If the user mentions "attack", "simultaneous", "twice", "continuously", or doing something multiple times at once, set executionStrategy to "Concurrent Attack". Otherwise, use "Sequential".
+                3. ONLY output raw JSON. NO markdown, NO greetings, NO explanations.
+                4. The JSON MUST exactly match this Schema:
+                ${JSON.stringify(rulebookJsonSchema)}
+
+                EXAMPLES:
+                User: "What happens if I click payment twice?"
+                Output: { "RuleBook": [{ "stepId": "1", "action": "PAYMENT", "amount": 100, "requestVolume": 2, "executionStrategy": "Concurrent Attack", "mockResponse": { "httpStatus": 200, "body": { "message": "Success" } } }] }
+
+                User: "I clicked the payment button continuously for 30 times"
+                Output: { "RuleBook": [{ "stepId": "1", "action": "PAYMENT", "amount": 100, "requestVolume": 30, "executionStrategy": "Concurrent Attack", "mockResponse": { "httpStatus": 200, "body": { "message": "Success" } } }] }`
+
             },
             {
                 role: "user",
@@ -60,26 +71,26 @@ async function compileStateMachine(scenarioDescription: string) {
         temperature: 0,
     });
     const result = response.choices[0]?.message?.content;
-    console.log(`=====AI COMPILED RULE BOOK=====`);
-    console.log(result);
     console.log(`=====INITIATING FIREWALL=====`);
     try{
         const rawJSON = JSON.parse(result!);
-        const validatedData = FinalSchema.parse(rawJSON);
+        let arrayToValidate;
+        if (Array.isArray(rawJSON)){
+            arrayToValidate = rawJSON
+        }else{
+            const foundArray = Object.values(rawJSON).find(val => Array.isArray(val));
+            if (!foundArray){
+                throw new Error("AI did not generate an array of steps");
+            }
+            arrayToValidate = foundArray
+        }
+        const validatedData = ScenarioRuleBookSchema.parse(arrayToValidate);
         console.log(`=====FIREWALL PASSED=====!`);
-        console.log(`The AI data is valid and follows the schema, now it can be used for testing`);
-        const exportPath = "./rulebook.json";
-        fs.writeFileSync(exportPath, JSON.stringify(validatedData, null, 2));
-        console.log(`Rulebook saved to ${exportPath}`);
+        return validatedData;
         }
     catch(error:any){
         console.error("FIREWALL BLOCKED THE DATA! The AI hallucinated.", error);
+        throw error
     }
 }
-const userScenario = process.argv[2];
-if (!userScenario) {
-    console.error("Please enter a valid scenario description");
-    console.error('Example: npx ts-node ai-compiler.ts "The user pays, it fails, then succeeds"');
-    process.exit(1);
-}
-compileStateMachine(userScenario);
+

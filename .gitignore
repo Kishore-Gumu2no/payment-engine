@@ -1,7 +1,8 @@
 node_modules/
-# Keep environment variables out of version control
+qa-dashboard/node_modules/
 .env
+.env.local
 rulebook.json
-
-
+dist/
+qa-dashboard/dist/
 /generated/prisma
