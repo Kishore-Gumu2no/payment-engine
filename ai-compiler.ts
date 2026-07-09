@@ -35,10 +35,11 @@ const RefundStepSchema = z.object(
 const ScenarioStepSchema = z.discriminatedUnion("action", [PaymentStepSchema, RefundStepSchema]);
 export const ScenarioRuleBookSchema = z.array(ScenarioStepSchema);
 const rulebookJsonSchema = zodToJsonSchema(ScenarioRuleBookSchema, "RuleBook");
-const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY
-});
-export async function compileQA(scenarioDescription: string) {
+
+export async function compileQA(scenarioDescription: string, apiKey: string) {
+    const groq = new Groq({ 
+        apiKey: process.env.GROQ_API_KEY 
+    });
     console.log(`Compiling scenario description: ${scenarioDescription}`);
     const response = await groq.chat.completions.create({
         model: "llama-3.3-70b-versatile",

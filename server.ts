@@ -48,7 +48,7 @@ app.post('/qa/compile', async (req, res) => {
     if (!prompt) return res.status(400).send({ error: "No prompt provided" });
 
     try {
-        const rulebookJson = await compileQA(prompt);
+        const rulebookJson = await compileQA(prompt, process.env.GROQ_API_KEY as string);
         await redis.set('active_qa_scenario', JSON.stringify(rulebookJson), 'EX', 600);
         currentStepIndex = 0;
         currentStepVolumeCount = 0;
