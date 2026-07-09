@@ -6,7 +6,7 @@ const { PrismaClient } = pkg as any;
 import { PrismaPg } from '@prisma/adapter-pg';
 import Redis from 'ioredis';
 import cors from 'cors';
-import {compileQA} from './ai-compiler.ts'
+import {compileQA} from './ai-compiler.js'
 
 if(!process.env.DATABASE_URL) {
     throw new Error("DATBASE_URL environment variable is not set.");
@@ -16,7 +16,7 @@ const adapter = new PrismaPg({
 });
 const app = express();
 const prisma = new PrismaClient({ adapter: adapter });
-const redis = new Redis();
+const redis = new Redis(process.env.REDIS_URL as string);
 
 app.use(cors());
 
