@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["server.ts", "prisma/**/*.ts", "src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "payment-gateway-qa-dashboard"]
 }
