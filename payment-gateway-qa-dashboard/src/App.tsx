@@ -43,7 +43,7 @@ export default function App() {
   const handleCompile = async () => {
     setIsCompiling(true);
     try {
-      const response = await fetch('http://localhost:3000/qa/compile', {
+      const response = await fetch('https://payment-engine-ai-ah4os.ondigitalocean.app/qa/compile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt })
@@ -94,7 +94,7 @@ export default function App() {
 
         for (let i = 0; i < step.requestVolume; i++) {
           const idempotencyKey = step.executionStrategy === 'Concurrent Attack' ? attackKey : crypto.randomUUID();
-          const endpoint = step.action === 'PAYMENT' ? 'http://localhost:3000/payment' : 'http://localhost:3000/refund';
+          const endpoint = step.action === 'PAYMENT' ? 'https://payment-engine-ai-ah4os.ondigitalocean.app/payment' : 'https://payment-engine-ai-ah4os.ondigitalocean.app/refund';
           const body = step.action === 'PAYMENT' 
             ? { amount: step.amount || 100, idempotencyKey }
             : { originalTransactionId: 'mock_txn_123', idempotencyKey };
