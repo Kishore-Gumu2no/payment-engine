@@ -10,7 +10,7 @@ import {
   Terminal,
 } from 'lucide-react'
 
-const API_BASE = 'http://localhost:3000'
+const API_BASE = 'https://payment-engine-ai-ah4os.ondigitalocean.app'
 
 type ActionType = 'PAYMENT' | 'REFUND'
 

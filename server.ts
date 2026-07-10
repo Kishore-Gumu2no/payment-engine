@@ -19,7 +19,9 @@ const prisma = new PrismaClient({ adapter: adapter });
 const redis = new Redis(process.env.REDIS_URL as string);
 
 app.use(cors());
-
+app.use(cors({
+  origin: 'https://payment-engine-37fd.vercel.app' // Replace with your exact Vercel URL
+}));
 
 const paymentSchema = z.object({
     amount: z.number().int().positive(),
