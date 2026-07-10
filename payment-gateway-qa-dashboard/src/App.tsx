@@ -107,7 +107,7 @@ export default function App() {
             const data = await res.json().catch(() => ({}));
             pushLog(res.status, data.error || data.message || `Status ${res.status}`);
             updateMetrics(res.status, step.action);
-          }).catch((err) => {
+          }).catch((_err) => {
             pushLog(500, 'Network/CORS Error');
             updateMetrics(500, step.action);
           });
