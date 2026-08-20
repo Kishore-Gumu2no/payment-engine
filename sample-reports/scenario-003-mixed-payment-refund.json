@@ -1,0 +1,78 @@
+{
+  "reportId": "report-003",
+  "scenarioId": "scenario-003",
+  "scenarioName": "Mixed Payment and Refund Sequence",
+  "executedAt": "2026-08-16T15:00:00.000Z",
+  "durationMs": 2100,
+  "summary": {
+    "totalRequests": 100,
+    "successful": 71,
+    "conflicts": 29,
+    "errors": 0,
+    "refunds": 1,
+    "successRate": 71.0
+  },
+  "steps": [
+    {
+      "stepId": "1",
+      "action": "PAYMENT",
+      "amount": 2500,
+      "requestVolume": 50,
+      "executionStrategy": "Sequential",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 50,
+        "status200": 50,
+        "status409": 0,
+        "status500": 0,
+        "avgLatencyMs": 11.8
+      }
+    },
+    {
+      "stepId": "2",
+      "action": "REFUND",
+      "originalTransactionId": "txn_demo_001",
+      "requestVolume": 30,
+      "executionStrategy": "Concurrent Attack",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Refund processed" } },
+      "actualResults": {
+        "total": 30,
+        "status200": 1,
+        "status409": 29,
+        "status500": 0,
+        "avgLatencyMs": 14.3
+      }
+    },
+    {
+      "stepId": "3",
+      "action": "PAYMENT",
+      "amount": 5000,
+      "requestVolume": 20,
+      "executionStrategy": "Sequential",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 20,
+        "status200": 20,
+        "status409": 0,
+        "status500": 0,
+        "avgLatencyMs": 10.9
+      }
+    }
+  ],
+  "idempotencyAnalysis": {
+    "uniqueKeysUsed": 71,
+    "duplicateKeysAttempted": 29,
+    "redisLocksAcquired": 71,
+    "redisLocksRejected": 29,
+    "dbUniqueViolations": 0,
+    "conflictRatePercent": 29.0
+  },
+  "performance": {
+    "p50LatencyMs": 12,
+    "p95LatencyMs": 19,
+    "p99LatencyMs": 28,
+    "throughputRps": 48
+  },
+  "verdict": "PASS",
+  "notes": "Multi-step scenario executed correctly. Step 1: 50 sequential payments all succeeded. Step 2: 30 concurrent refunds on same key — 1 succeeded, 29 rejected by Redis (expected). Step 3: 20 sequential payments all succeeded. Sequence tracking (currentStepIndex) worked correctly across async requests. Refund idempotency separate from payment idempotency — both protected by Redis locks."
+}

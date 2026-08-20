@@ -1,0 +1,47 @@
+{
+  "reportId": "report-001",
+  "scenarioId": "scenario-001",
+  "scenarioName": "Basic Payment Success Flow",
+  "executedAt": "2026-08-16T09:15:00.000Z",
+  "durationMs": 1250,
+  "summary": {
+    "totalRequests": 100,
+    "successful": 100,
+    "conflicts": 0,
+    "errors": 0,
+    "refunds": 0,
+    "successRate": 100.0
+  },
+  "steps": [
+    {
+      "stepId": "1",
+      "action": "PAYMENT",
+      "amount": 5000,
+      "requestVolume": 100,
+      "executionStrategy": "Sequential",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 100,
+        "status200": 100,
+        "status409": 0,
+        "status500": 0,
+        "avgLatencyMs": 12.5
+      }
+    }
+  ],
+  "idempotencyAnalysis": {
+    "uniqueKeysUsed": 100,
+    "duplicateKeysAttempted": 0,
+    "redisLocksAcquired": 100,
+    "redisLocksRejected": 0,
+    "dbUniqueViolations": 0
+  },
+  "performance": {
+    "p50LatencyMs": 11,
+    "p95LatencyMs": 18,
+    "p99LatencyMs": 25,
+    "throughputRps": 80
+  },
+  "verdict": "PASS",
+  "notes": "All 100 sequential payments with unique idempotency keys succeeded. No conflicts detected. Idempotency system working correctly for normal sequential load."
+}

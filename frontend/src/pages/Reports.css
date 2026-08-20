@@ -1,0 +1,113 @@
+@layer components {
+  .reports-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  @media (min-width: 768px) {
+    .page-header {
+      flex-direction: row;
+    }
+  }
+
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: 510;
+    color: var(--color-paper);
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    color: var(--color-fog);
+    font-size: var(--text-sm);
+    margin-top: var(--space-1);
+  }
+
+  .header-right {
+    display: flex;
+    gap: var(--space-3);
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  @media (min-width: 768px) {
+    .header-right {
+      width: auto;
+    }
+  }
+
+  .time-range-select {
+    min-width: 160px;
+  }
+
+  .demo-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-obsidian);
+    border: 1px solid var(--color-graphite);
+    border-radius: var(--radius-card);
+    font-size: var(--text-sm);
+    color: var(--color-mist);
+  }
+
+  .demo-banner svg {
+    color: var(--color-acid-lime);
+    flex-shrink: 0;
+  }
+
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-obsidian);
+    border: 1px solid var(--color-coral-red);
+    border-radius: var(--radius-card);
+    color: var(--color-coral-red);
+    font-size: var(--text-sm);
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .kpi-card {
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .kpi-card:hover {
+    border-color: var(--color-graphite);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .reports-tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .metrics-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .status-bar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "reportId": "report-002",
+  "scenarioId": "scenario-002",
+  "scenarioName": "Concurrent Attack on Same Key",
+  "executedAt": "2026-08-16T11:45:00.000Z",
+  "durationMs": 890,
+  "summary": {
+    "totalRequests": 50,
+    "successful": 1,
+    "conflicts": 49,
+    "errors": 0,
+    "refunds": 0,
+    "successRate": 2.0
+  },
+  "steps": [
+    {
+      "stepId": "1",
+      "action": "PAYMENT",
+      "amount": 10000,
+      "requestVolume": 50,
+      "executionStrategy": "Concurrent Attack",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 50,
+        "status200": 1,
+        "status409": 49,
+        "status500": 0,
+        "avgLatencyMs": 15.2
+      }
+    }
+  ],
+  "idempotencyAnalysis": {
+    "uniqueKeysUsed": 1,
+    "duplicateKeysAttempted": 49,
+    "redisLocksAcquired": 1,
+    "redisLocksRejected": 49,
+    "dbUniqueViolations": 0,
+    "conflictRatePercent": 98.0
+  },
+  "performance": {
+    "p50LatencyMs": 14,
+    "p95LatencyMs": 22,
+    "p99LatencyMs": 31,
+    "throughputRps": 56
+  },
+  "verdict": "PASS",
+  "notes": "Redis SET NX lock correctly rejected 49/50 concurrent requests on the same idempotency key. Only the first request acquired the lock and succeeded. Zero database unique violations — Redis absorbed all duplicate traffic before reaching PostgreSQL. Idempotency defense working as designed under thundering herd conditions."
+}

@@ -1,0 +1,48 @@
+{
+  "reportId": "report-004",
+  "scenarioId": "scenario-004",
+  "scenarioName": "Failure Injection - 500 Errors",
+  "executedAt": "2026-08-16T16:30:00.000Z",
+  "durationMs": 420,
+  "summary": {
+    "totalRequests": 20,
+    "successful": 0,
+    "conflicts": 0,
+    "errors": 20,
+    "refunds": 0,
+    "successRate": 0.0
+  },
+  "steps": [
+    {
+      "stepId": "1",
+      "action": "PAYMENT",
+      "amount": 1000,
+      "requestVolume": 20,
+      "executionStrategy": "Sequential",
+      "expectedMockResponse": { "httpStatus": 500, "body": { "message": "Internal Server Error" } },
+      "actualResults": {
+        "total": 20,
+        "status200": 0,
+        "status409": 0,
+        "status500": 20,
+        "avgLatencyMs": 8.1
+      }
+    }
+  ],
+  "idempotencyAnalysis": {
+    "uniqueKeysUsed": 20,
+    "duplicateKeysAttempted": 0,
+    "redisLocksAcquired": 20,
+    "redisLocksRejected": 0,
+    "dbUniqueViolations": 0,
+    "notes": "Redis locks acquired but released immediately on mock error — keys not consumed"
+  },
+  "performance": {
+    "p50LatencyMs": 7,
+    "p95LatencyMs": 11,
+    "p99LatencyMs": 15,
+    "throughputRps": 47
+  },
+  "verdict": "PASS",
+  "notes": "All 20 requests returned simulated 500 errors per rulebook. Redis locks were acquired then released (DEL) on each mock error response — idempotency keys remain reusable. No database writes attempted (mock short-circuits before Prisma). Failure injection working correctly for chaos engineering."
+}

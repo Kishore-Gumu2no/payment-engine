@@ -1,0 +1,110 @@
+{
+  "reportId": "report-006",
+  "scenarioId": "scenario-006",
+  "scenarioName": "Idempotency Stress Test",
+  "executedAt": "2026-08-17T09:00:00.000Z",
+  "durationMs": 18500,
+  "summary": {
+    "totalRequests": 1400,
+    "successful": 1400,
+    "conflicts": 0,
+    "errors": 0,
+    "refunds": 0,
+    "successRate": 100.0
+  },
+  "steps": [
+    {
+      "stepId": "1",
+      "action": "PAYMENT",
+      "amount": 100,
+      "requestVolume": 1000,
+      "executionStrategy": "Sequential",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 1000,
+        "status200": 1000,
+        "status409": 0,
+        "status500": 0,
+        "avgLatencyMs": 9.2
+      }
+    },
+    {
+      "stepId": "2",
+      "action": "PAYMENT",
+      "amount": 100,
+      "requestVolume": 100,
+      "executionStrategy": "Concurrent Attack",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 100,
+        "status200": 1,
+        "status409": 99,
+        "status500": 0,
+        "avgLatencyMs": 13.7
+      }
+    },
+    {
+      "stepId": "3",
+      "action": "PAYMENT",
+      "amount": 100,
+      "requestVolume": 100,
+      "executionStrategy": "Concurrent Attack",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 100,
+        "status200": 1,
+        "status409": 99,
+        "status500": 0,
+        "avgLatencyMs": 14.1
+      }
+    },
+    {
+      "stepId": "4",
+      "action": "PAYMENT",
+      "amount": 100,
+      "requestVolume": 100,
+      "executionStrategy": "Concurrent Attack",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 100,
+        "status200": 1,
+        "status409": 99,
+        "status500": 0,
+        "avgLatencyMs": 13.9
+      }
+    },
+    {
+      "stepId": "5",
+      "action": "PAYMENT",
+      "amount": 100,
+      "requestVolume": 100,
+      "executionStrategy": "Concurrent Attack",
+      "expectedMockResponse": { "httpStatus": 200, "body": { "message": "Success" } },
+      "actualResults": {
+        "total": 100,
+        "status200": 1,
+        "status409": 99,
+        "status500": 0,
+        "avgLatencyMs": 13.5
+      }
+    }
+  ],
+  "idempotencyAnalysis": {
+    "uniqueKeysUsed": 1004,
+    "duplicateKeysAttempted": 396,
+    "redisLocksAcquired": 1004,
+    "redisLocksRejected": 396,
+    "dbUniqueViolations": 0,
+    "conflictRatePercent": 28.3,
+    "keysConsumedBySuccess": 1004,
+    "keysReusableAfterConflict": 396
+  },
+  "performance": {
+    "p50LatencyMs": 10,
+    "p95LatencyMs": 18,
+    "p99LatencyMs": 26,
+    "throughputRps": 75
+  },
+  "verdict": "PASS",
+  "notes": "Large-scale stress test passed. Step 1: 1000 sequential unique-key payments — all succeeded, demonstrating throughput under sustained load. Steps 2-5: Four concurrent attack waves (100 requests each on same key) — each wave correctly allowed 1 success and rejected 99 via Redis. Zero database unique constraint violations across all 1400 requests. Redis absorbed 396 duplicate attempts before they reached PostgreSQL. Idempotency keys from conflicts remain reusable (locks released on 409). System maintains correctness under extreme concurrency."
+}

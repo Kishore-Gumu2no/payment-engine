@@ -1,0 +1,44 @@
+{
+  "name": "payment-engine-backend",
+  "version": "1.0.0",
+  "description": "Stateful AI-Driven Payment Engine - Backend",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "keywords": ["payment", "gateway", "idempotency", "redis", "prisma", "groq"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.4",
+    "concurrently": "^10.0.3",
+    "prisma": "^7.6.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.6.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "groq-sdk": "^1.2.1",
+    "ioredis": "^5.11.1",
+    "pg": "^8.20.0",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.2"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  }
+}

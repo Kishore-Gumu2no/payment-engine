@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: payment-engine-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment_engine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d payment_engine"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - payment-engine-network
+
+  # Redis Cache (for idempotency locks)
+  redis:
+    image: redis:7-alpine
+    container_name: payment-engine-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - payment-engine-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: payment-engine-backend
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/payment_engine?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - payment-engine-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - /app/dist
+
+  # Frontend Dev Server (Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: payment-engine-frontend
+    environment:
+      VITE_API_BASE: http://localhost:3000
+      VITE_DEMO_MODE: "false"
+      VITE_DEMO_DATA_PATH: /data/demo.json
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - payment-engine-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/dist
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  payment-engine-network:
+    driver: bridge

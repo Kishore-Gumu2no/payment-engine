@@ -1,0 +1,501 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-08-19T00:00:00.000Z",
+  "scenarios": [
+    {
+      "id": "scenario-001",
+      "name": "Basic Payment Success Flow",
+      "description": "100 sequential payments of $50, all expected to succeed",
+      "steps": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 5000,
+          "requestVolume": 100,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ],
+      "createdAt": "2026-08-15T10:00:00.000Z"
+    },
+    {
+      "id": "scenario-002",
+      "name": "Concurrent Attack on Same Key",
+      "description": "50 concurrent payment attempts on the same idempotency key - tests duplicate rejection",
+      "steps": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 10000,
+          "requestVolume": 50,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ],
+      "createdAt": "2026-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "scenario-003",
+      "name": "Mixed Payment and Refund Sequence",
+      "description": "50 payments succeed, then 30 refunds on same key (concurrent attack), then 20 more payments",
+      "steps": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 2500,
+          "requestVolume": 50,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "2",
+          "action": "REFUND",
+          "originalTransactionId": "txn_demo_001",
+          "requestVolume": 30,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Refund processed" }
+          }
+        },
+        {
+          "stepId": "3",
+          "action": "PAYMENT",
+          "amount": 5000,
+          "requestVolume": 20,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ],
+      "createdAt": "2026-08-15T12:00:00.000Z"
+    },
+    {
+      "id": "scenario-004",
+      "name": "Failure Injection - 500 Errors",
+      "description": "20 payments configured to return 500 Internal Server Error - tests error handling",
+      "steps": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 1000,
+          "requestVolume": 20,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 500,
+            "body": { "message": "Internal Server Error" }
+          }
+        }
+      ],
+      "createdAt": "2026-08-15T13:00:00.000Z"
+    },
+    {
+      "id": "scenario-005",
+      "name": "Timeout Simulation",
+      "description": "15 requests configured to timeout - tests client-side timeout handling",
+      "steps": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 7500,
+          "requestVolume": 15,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 408,
+            "body": { "message": "Request Timeout" },
+            "timeout": true
+          }
+        }
+      ],
+      "createdAt": "2026-08-15T14:00:00.000Z"
+    },
+    {
+      "id": "scenario-006",
+      "name": "Idempotency Stress Test",
+      "description": "1000 sequential payments with unique keys, then 100 concurrent attacks on 10 different keys",
+      "steps": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 100,
+          "requestVolume": 1000,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "2",
+          "action": "PAYMENT",
+          "amount": 100,
+          "requestVolume": 100,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "3",
+          "action": "PAYMENT",
+          "amount": 100,
+          "requestVolume": 100,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "4",
+          "action": "PAYMENT",
+          "amount": 100,
+          "requestVolume": 100,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "5",
+          "action": "PAYMENT",
+          "amount": 100,
+          "requestVolume": 100,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ],
+      "createdAt": "2026-08-15T15:00:00.000Z"
+    }
+  ],
+  "executions": [
+    {
+      "id": "exec-001",
+      "scenarioId": "scenario-001",
+      "timestamp": "2026-08-16T09:15:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 09:15:00.123", "action": "PAYMENT" },
+        { "id": "log-2", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 09:15:00.124", "action": "PAYMENT" },
+        { "id": "log-3", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 09:15:00.125", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 100,
+        "ok200": 100,
+        "conflict409": 0,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-002",
+      "scenarioId": "scenario-001",
+      "timestamp": "2026-08-16T10:30:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 10:30:00.100", "action": "PAYMENT" },
+        { "id": "log-2", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 10:30:00.101", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 100,
+        "ok200": 100,
+        "conflict409": 0,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-003",
+      "scenarioId": "scenario-002",
+      "timestamp": "2026-08-16T11:45:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 11:45:00.200", "action": "PAYMENT" },
+        { "id": "log-2", "status": 409, "message": "[PAYMENT] {\"error\":\"Payment already in process.\"}", "timestamp": "2026-08-16 11:45:00.201", "action": "PAYMENT" },
+        { "id": "log-3", "status": 409, "message": "[PAYMENT] {\"error\":\"Payment already in process.\"}", "timestamp": "2026-08-16 11:45:00.202", "action": "PAYMENT" },
+        { "id": "log-4", "status": 409, "message": "[PAYMENT] {\"error\":\"Payment already in process.\"}", "timestamp": "2026-08-16 11:45:00.203", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 50,
+        "ok200": 1,
+        "conflict409": 49,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-004",
+      "scenarioId": "scenario-002",
+      "timestamp": "2026-08-16T14:20:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 14:20:00.500", "action": "PAYMENT" },
+        { "id": "log-2", "status": 409, "message": "[PAYMENT] {\"error\":\"Payment already in process.\"}", "timestamp": "2026-08-16 14:20:00.501", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 50,
+        "ok200": 1,
+        "conflict409": 49,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-005",
+      "scenarioId": "scenario-003",
+      "timestamp": "2026-08-16T15:00:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 15:00:00.100", "action": "PAYMENT" },
+        { "id": "log-2", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 15:00:00.101", "action": "PAYMENT" },
+        { "id": "log-3", "status": 200, "message": "[REFUND] {\"message\":\"Refund processed\"}", "timestamp": "2026-08-16 15:00:00.200", "action": "REFUND" },
+        { "id": "log-4", "status": 409, "message": "[REFUND] {\"error\":\"Refund already in process.\"}", "timestamp": "2026-08-16 15:00:00.201", "action": "REFUND" },
+        { "id": "log-5", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-16 15:00:00.300", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 100,
+        "ok200": 71,
+        "conflict409": 29,
+        "error500": 0,
+        "refundsProcessed": 1
+      }
+    },
+    {
+      "id": "exec-006",
+      "scenarioId": "scenario-004",
+      "timestamp": "2026-08-16T16:30:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 500, "message": "[PAYMENT] {\"message\":\"Internal Server Error\"}", "timestamp": "2026-08-16 16:30:00.100", "action": "PAYMENT" },
+        { "id": "log-2", "status": 500, "message": "[PAYMENT] {\"message\":\"Internal Server Error\"}", "timestamp": "2026-08-16 16:30:00.101", "action": "PAYMENT" },
+        { "id": "log-3", "status": 500, "message": "[PAYMENT] {\"message\":\"Internal Server Error\"}", "timestamp": "2026-08-16 16:30:00.102", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 20,
+        "ok200": 0,
+        "conflict409": 0,
+        "error500": 20,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-007",
+      "scenarioId": "scenario-005",
+      "timestamp": "2026-08-16T17:00:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 408, "message": "[PAYMENT] {\"message\":\"Request Timeout\"}", "timestamp": "2026-08-16 17:00:00.100", "action": "PAYMENT" },
+        { "id": "log-2", "status": 408, "message": "[PAYMENT] {\"message\":\"Request Timeout\"}", "timestamp": "2026-08-16 17:00:00.101", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 15,
+        "ok200": 0,
+        "conflict409": 0,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-008",
+      "scenarioId": "scenario-006",
+      "timestamp": "2026-08-17T09:00:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-17 09:00:00.001", "action": "PAYMENT" },
+        { "id": "log-2", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-17 09:00:00.002", "action": "PAYMENT" },
+        { "id": "log-3", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-17 09:00:00.003", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 1400,
+        "ok200": 1400,
+        "conflict409": 0,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "exec-009",
+      "scenarioId": "scenario-006",
+      "timestamp": "2026-08-17T14:00:00.000Z",
+      "logs": [
+        { "id": "log-1", "status": 200, "message": "[PAYMENT] {\"message\":\"Success\"}", "timestamp": "2026-08-17 14:00:00.100", "action": "PAYMENT" },
+        { "id": "log-2", "status": 409, "message": "[PAYMENT] {\"error\":\"Payment already in process.\"}", "timestamp": "2026-08-17 14:00:00.101", "action": "PAYMENT" }
+      ],
+      "metrics": {
+        "total": 1400,
+        "ok200": 1310,
+        "conflict409": 90,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    }
+  ],
+  "rulebooks": [
+    {
+      "message": "Compiled successfully",
+      "rulebook": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 5000,
+          "requestVolume": 100,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ]
+    },
+    {
+      "message": "Compiled successfully",
+      "rulebook": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 10000,
+          "requestVolume": 50,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ]
+    },
+    {
+      "message": "Compiled successfully",
+      "rulebook": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 2500,
+          "requestVolume": 50,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "2",
+          "action": "REFUND",
+          "originalTransactionId": "txn_demo_001",
+          "requestVolume": 30,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Refund processed" }
+          }
+        },
+        {
+          "stepId": "3",
+          "action": "PAYMENT",
+          "amount": 5000,
+          "requestVolume": 20,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ]
+    }
+  ],
+  "failurePatterns": [
+    {
+      "id": "pattern-001",
+      "name": "High Conflict Rate",
+      "description": "Concurrent attack on same idempotency key produces 98% conflict rate",
+      "scenario": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 10000,
+          "requestVolume": 50,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        }
+      ],
+      "expectedMetrics": {
+        "total": 50,
+        "ok200": 1,
+        "conflict409": 49,
+        "error500": 0,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "pattern-002",
+      "name": "Complete Failure",
+      "description": "All requests return 500 - simulates backend outage",
+      "scenario": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 1000,
+          "requestVolume": 20,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 500,
+            "body": { "message": "Internal Server Error" }
+          }
+        }
+      ],
+      "expectedMetrics": {
+        "total": 20,
+        "ok200": 0,
+        "conflict409": 0,
+        "error500": 20,
+        "refundsProcessed": 0
+      }
+    },
+    {
+      "id": "pattern-003",
+      "name": "Mixed Success and Conflict",
+      "description": "Sequential payments followed by concurrent refund attack",
+      "scenario": [
+        {
+          "stepId": "1",
+          "action": "PAYMENT",
+          "amount": 2500,
+          "requestVolume": 50,
+          "executionStrategy": "Sequential",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Success" }
+          }
+        },
+        {
+          "stepId": "2",
+          "action": "REFUND",
+          "originalTransactionId": "txn_demo_001",
+          "requestVolume": 30,
+          "executionStrategy": "Concurrent Attack",
+          "mockResponse": {
+            "httpStatus": 200,
+            "body": { "message": "Refund processed" }
+          }
+        }
+      ],
+      "expectedMetrics": {
+        "total": 80,
+        "ok200": 51,
+        "conflict409": 29,
+        "error500": 0,
+        "refundsProcessed": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "RuleBook": [
+    {
+      "stepId": "1",
+      "action": "PAYMENT",
+      "amount": 100,
+      "mockResponse": {
+        "httpStatus": 400,
+        "body": {
+          "message": "Payment failed due to invalid card details"
+        }
+      }
+    },
+    {
+      "stepId": "2",
+      "action": "PAYMENT",
+      "amount": 200,
+      "mockResponse": {
+        "httpStatus": 500,
+        "body": {
+          "message": "Internal server error"
+        }
+      }
+    },
+    {
+      "stepId": "3",
+      "action": "PAYMENT",
+      "amount": 300,
+      "mockResponse": {
+        "httpStatus": 200,
+        "body": {
+          "message": "Payment successful"
+        }
+      }
+    },
+    {
+      "stepId": "4",
+      "action": "PAYMENT",
+      "amount": 400,
+      "mockResponse": {
+        "httpStatus": 402,
+        "body": {
+          "message": "Payment failed due to insufficient funds"
+        }
+      }
+    },
+    {
+      "stepId": "5",
+      "action": "REFUND",
+      "originalTransactionId": "3",
+      "mockResponse": {
+        "httpStatus": 200,
+        "body": {
+          "message": "Refund successful"
+        }
+      }
+    }
+  ]
+}

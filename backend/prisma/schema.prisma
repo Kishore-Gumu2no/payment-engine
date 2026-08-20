@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Payment {
+  id             String @id @default(uuid())
+  idempotencyKey String @unique
+  amount         Int
+}
+
+model Refund {
+  id                    String @id @default(uuid())
+  originalTransactionId String
+  idempotencyKey        String @unique
+}
