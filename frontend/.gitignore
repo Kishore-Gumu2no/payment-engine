@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 milestones.txt
-CLAUDE.md
+
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +24,7 @@ CLAUDE.md
 *.njsproj
 *.sln
 *.sw?
+
+
+
+CLAUDE.md

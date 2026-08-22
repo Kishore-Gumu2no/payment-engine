@@ -17,7 +17,7 @@ Atomic Redis `SET NX` locks reject duplicates before DB. AI compiler (Groq) turn
 ---
 
 
-### 3. Request Execution Flow
+### Request Execution Flow
 ```
 POST /payment or /refund
         │
@@ -60,46 +60,4 @@ POST /payment or /refund
 ```
 
 
-## Quick Start
 
-### Prerequisites
-- Node.js 22+
-- Docker & Docker Compose (for local DB/Redis)
-- Groq API key (free tier at console.groq.com)
-
-### 1. Clone & Configure
-```bash
-cd Stateful-AI-Payment-Engine
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env.local
-# Edit backend/.env with your GROQ_API_KEY
-```
-
-### 2. Start Infrastructure
-```bash
-docker-compose up -d postgres redis
-```
-
-### 3. Setup Database
-```bash
-cd backend
-npm install
-npm run prisma:generate
-npm run prisma:migrate
-```
-
-### 4. Start Development
-```bash
-# Terminal 1: Backend
-cd backend && npm run dev
-
-# Terminal 2: Frontend
-cd frontend && npm install && npm run dev
-```
-
-### 5. Access
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3000
-- **Prisma Studio**: `cd backend && npm run prisma:studio`
-
----
