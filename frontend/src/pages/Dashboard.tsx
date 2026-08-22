@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, PlusSquare, TerminalSquare, TrendingUp, AlertTriangle, Zap, History, FileText, Settings } from 'lucide-react';
+import { Activity, PlusSquare, TerminalSquare, TrendingUp, AlertTriangle, Zap, History, FileText, Settings, Shield, Users, Cpu, Database, Heading3 } from 'lucide-react';
 import { MODE } from '../config/mode.js';
 import { useHistory } from '../hooks/useHistory.js';
 import {
@@ -56,23 +56,36 @@ export function Dashboard() {
     },
   ];
 
+  const problemAdvantages = [
+    {
+      icon: Shield,
+      title: 'No Double Charges',
+      description: 'Each payment gets a unique lock. If someone clicks pay twice by mistake, the second one gets stopped automatically.',
+    },
+    {
+      icon: Users,
+      title: 'Handles Crowds',
+      description: 'Thousands of people can pay at the same time. The system queues them fairly so nobody gets lost.',
+    },
+    {
+      icon: Cpu,
+      title: 'Finds Weak Spots',
+      description: 'Our AI creates crash tests — like 500 people hitting "pay" on the same button — so we fix bugs before real users hit them.',
+    },
+    {
+      icon: Database,
+      title: 'Remembers Everything',
+      description: 'Every payment and refund is saved forever. You can always check what happened, when, and why.',
+    },
+  ];
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <div className="header-left">
-          <h1 className="page-title">Dashboard</h1>
-          <p className="page-subtitle">
-            {MODE.isDemo
-              ? 'Viewing pre-generated demo data. Set VITE_DEMO_MODE=false to connect a backend.'
-              : 'Build scenarios, execute tests, and analyze idempotency behavior.'}
-          </p>
-        </div>
-        <div className="header-right">
-          <Link to="/builder">
-            <Button icon={<PlusSquare className="h-5 w-5" />}>
-              New Scenario
-            </Button>
-          </Link>
+        <div className="header-center">
+          <h1 className="hero-heading">
+            Build scenarios, execute tests, and analyze idempotency behavior.
+          </h1>
         </div>
       </header>
 
@@ -83,7 +96,7 @@ export function Dashboard() {
         </div>
       )}
 
-      {/* Stats Overview */}
+      {/* Stats Overview - Moved Above Problem Statement */}
       <section className="stats-section" aria-label="Key metrics">
         <div className="stats-grid">
           <MetricCard
@@ -110,6 +123,38 @@ export function Dashboard() {
             accent="info"
           />
         </div>
+      </section>
+
+      {/* Problem Statement Card */}
+      <section className="problem-section" aria-label="Problem statement">
+        <Card variant="default" className="problem-card">
+          <div className="problem-card-header">
+            <span className="problem-card-label">Problem being faced</span>
+          </div>
+          <div className="problem-card-content">
+            <div className="problem-left">
+              <h2 className="problem-question">
+                Have you ever wondered how real payment gateways remain to be functional and working by handling a huge number of requests at once?
+              </h2>
+              <p className="problem-answer">
+                When thousands of people click "pay" at the same moment, things break. Payments get charged twice. Refunds vanish. Systems crash. We built a testing engine that simulates this chaos so you can fix the breaks before real money is on the line.
+              </p>
+            </div>
+            <div className="problem-right">
+              <div className="advantages-grid">
+                {problemAdvantages.map((adv, idx) => (
+                  <div key={idx} className="advantage-card">
+                    <div className="advantage-icon">
+                      <adv.icon size={20} />
+                    </div>
+                    <h3 className="advantage-title">{adv.title}</h3>
+                    <p className="advantage-description">{adv.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
       </section>
 
       {/* Quick Actions */}

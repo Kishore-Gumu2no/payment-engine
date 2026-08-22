@@ -213,24 +213,156 @@
   border-bottom: none;
 }
 
+/* Hero Header */
+.dashboard-header {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-48) 0 var(--spacing-24);
+}
+
+.header-center {
+  text-align: center;
+  max-width: 800px;
+  padding: 0 var(--spacing-24);
+}
+
+.hero-heading {
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-w510);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+  color: var(--color-paper);
+  margin: 0;
+}
+
+/* Problem Statement Card */
+.problem-section {
+  margin-top: var(--spacing-48);
+}
+
+.problem-card {
+  background: linear-gradient(135deg, var(--color-carbon) 0%, var(--color-obsidian) 100%);
+  border: 1px solid var(--color-graphite);
+}
+
+.problem-card-header {
+  padding: var(--spacing-20) var(--spacing-24) var(--spacing-12);
+  border-bottom: 1px solid var(--color-graphite);
+}
+
+.problem-card-label {
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-w510);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--color-acid-lime);
+}
+
+.problem-card-content {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--spacing-32);
+  padding: var(--spacing-32) var(--spacing-24);
+  align-items: start;
+}
+
+.problem-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.problem-question {
+  font-size: var(--text-subheading);
+  font-weight: var(--font-weight-w510);
+  letter-spacing: var(--tracking-subheading);
+  line-height: var(--leading-subheading);
+  color: var(--color-paper);
+  margin: 0;
+}
+
+.problem-answer {
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-body);
+  color: var(--color-fog);
+  margin: 0;
+  max-width: 520px;
+}
+
+.problem-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-16);
+}
+
+.advantage-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10);
+  padding: var(--spacing-20);
+  background-color: var(--color-void);
+  border: 1px solid var(--color-graphite);
+  border-radius: var(--radius-xl);
+  transition: all 0.15s ease;
+}
+
+.advantage-card:hover {
+  border-color: var(--color-smoke);
+  background-color: var(--color-carbon);
+}
+
+.advantage-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: rgba(228, 242, 34, 0.1);
+  color: var(--color-acid-lime);
+}
+
+.advantage-title {
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-w510);
+  letter-spacing: var(--tracking-body-sm);
+  color: var(--color-paper);
+  margin: 0;
+}
+
+.advantage-description {
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-caption);
+  color: var(--color-fog);
+  margin: 0;
+}
+
 /* Responsive */
+@media (max-width: 1024px) {
+  .problem-card-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-24);
+  }
+
+  .advantages-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
-    flex-direction: column;
-    align-items: stretch;
+    padding: var(--spacing-32) 0 var(--spacing-16);
   }
 
-  .header-right {
-    width: 100%;
-  }
-
-  .header-right .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .page-title {
-    font-size: var(--text-heading);
+  .hero-heading {
+    font-size: var(--text-heading-sm);
   }
 
   .stats-grid {
@@ -249,6 +381,14 @@
   .section-header .btn-ghost-sm {
     width: 100%;
     justify-content: center;
+  }
+
+  .problem-card-content {
+    padding: var(--spacing-24) var(--spacing-20);
+  }
+
+  .advantages-grid {
+    grid-template-columns: 1fr;
   }
 
   .activity-section th:nth-child(5),

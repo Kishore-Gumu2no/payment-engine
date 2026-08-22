@@ -12,7 +12,7 @@
 }
 
 html {
-  font-family: var(--font-inter-variable);
+  font-family: var(--font-elms-sans);
   font-size: 16px;
   line-height: var(--leading-body);
   color: var(--color-text-primary);
@@ -191,7 +191,7 @@ body {
   justify-content: center;
   gap: var(--spacing-8);
   border-radius: var(--radius-buttons);
-  font-family: var(--font-inter-variable);
+  font-family: var(--font-elms-sans);
   font-size: var(--text-body-sm);
   font-weight: var(--font-weight-w510);
   letter-spacing: var(--tracking-body-sm);
@@ -275,7 +275,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-inputs);
   padding: 12px 14px;
-  font-family: var(--font-inter-variable);
+  font-family: var(--font-elms-sans);
   font-size: var(--text-body-sm);
   font-weight: var(--font-weight-regular);
   color: var(--color-text-secondary);
@@ -304,7 +304,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-inputs);
   padding: 12px 14px;
-  font-family: var(--font-inter-variable);
+  font-family: var(--font-elms-sans);
   font-size: var(--text-body-sm);
   font-weight: var(--font-weight-regular);
   color: var(--color-text-secondary);
@@ -335,7 +335,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-inputs);
   padding: 12px 14px;
-  font-family: var(--font-inter-variable);
+  font-family: var(--font-elms-sans);
   font-size: var(--text-body-sm);
   font-weight: var(--font-weight-regular);
   color: var(--color-text-secondary);
@@ -369,7 +369,7 @@ body {
   padding: 0 6px;
   height: 20px;
   border-radius: var(--radius-badges);
-  font-family: var(--font-inter-variable);
+  font-family: var(--font-elms-sans);
   font-size: 12px;
   font-weight: var(--font-weight-regular);
   background-color: rgba(255, 255, 255, 0.05);
